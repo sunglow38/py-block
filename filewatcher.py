@@ -2,8 +2,26 @@ import sys
 import glob
 import time
 import subprocess
+import hashlib
+import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
+
+BUF_SIZE = 65536
+sha256 = hashlib.sha256()
+
+def hash(file):
+    fp = file
+    if os.path.isfile(fp):
+        with open(fp, 'rb') as f:
+                while True:
+                    data = f.read(BUF_SIZE)
+                    if not data:
+                        break
+                    sha256.update(data)
+    return sha256.hexdigest()
+
 
 class Watcher:
     DIRECTORY_TO_WATCH = r'C:\Users\Alec\data'
