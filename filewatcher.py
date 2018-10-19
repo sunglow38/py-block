@@ -55,11 +55,11 @@ class Handler(FileSystemEventHandler):
         elif event.event_type == 'created':
             # Take any action here when a file is first created.
             h = hash(event.src_path)
-            url = 'https://127.0.0.1:5000/transactions/onCreation'
+            url = 'http://127.0.0.1:5000/transactions/onCreation'
             payload = {'File Hash': h, 'File Path': event.src_path, 'Signature': '1'}
             headers = {'content-type': 'application/json'}
             response = requests.post(url, data=json.dumps(payload), headers=headers)
-            
+
             print("Received created event - %s." % event.src_path)
             print('Hash of file: %s' % h)
             # r = requests.post(r'http://127.0.0.1', data={'File Hash'})
