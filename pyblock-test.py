@@ -193,7 +193,7 @@ class Blockchain:
         """
 
         last_proof = last_block['proof']
-   65l5     last_hash = self.hash(last_block)
+        last_hash = self.hash(last_block)
 
         proof = 0
         while self.valid_proof(last_proof, proof, last_hash) is False:
