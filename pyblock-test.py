@@ -120,7 +120,7 @@ class Blockchain:
             'transactions': self.current_transactions,
             'proof': proof,
             'previous_hash': previous_hash or self.hash(self.chain[-1]),
-            'Current Hash': self.hash,
+            'Current Hash': self.fileHash,
         }
 
         # Reset the current list of transactions
@@ -151,8 +151,10 @@ class Blockchain:
         return sha256.hexdigest()
 
     def fileHash(file):
+        sha256 = hashlib.sha256()
         directory = r'C:\Users\Highquality\data'
         BUF_SIZE = 65536
+
         files = [x for x in os.listdir(directory) if x.endswith('.jpg')]
         fp = directory + "\\" + files[json.loads('block')]
         if os.path.isfile(fp):
