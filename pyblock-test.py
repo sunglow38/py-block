@@ -154,7 +154,7 @@ class Blockchain:
         directory = r'C:\Users\Highquality\data'
         BUF_SIZE = 65536
         files = [x for x in os.listdir(directory) if x.endswith('.jpg')]
-        fp = directory + "\\" + files[json.loads('block')[]]
+        fp = directory + "\\" + files[json.loads('block')]
         if os.path.isfile(fp):
             with open(fp, 'rb') as f:
                     while True:
