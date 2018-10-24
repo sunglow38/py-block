@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import sys
 from time import time
 from urllib.parse import urlparse
 from uuid import uuid4
@@ -119,6 +120,7 @@ class Blockchain:
             'transactions': self.current_transactions,
             'proof': proof,
             'previous_hash': previous_hash or self.hash(self.chain[-1]),
+            'Current Hash': self.hash,
         }
 
         # Reset the current list of transactions
@@ -127,27 +129,6 @@ class Blockchain:
         self.chain.append(block)
         return block
 
-    def new_transaction(self, txType, fileHash, filePath, newHash, newPath, txTime, signature):
-        """
-        Creates a new transaction to go into the next mined Block
-
-        :param sender: Address of the Sender
-        :param recipient: Address of the Recipient
-        :param amount: Amount
-        :return: The index of the Block that will hold this transaction
-        """
-
-        self.current_transactions.append({
-            'Transaction type': txType,
-            'File Hash': fileHash,
-            'New File Hash': newHash,
-            'File Path': filePath,
-            'New File Path': newPath,
-            'Transaction Time': txTime,
-            'Signature': signature,
-        })
-
-        return self.last_block['index'] + 1
 
     @property
     def last_block(self):
@@ -160,26 +141,30 @@ class Blockchain:
 
         :param block: Block
         """
-        # directory = r'C:\Users\Highquality\data'
-        # BUF_SIZE = 65536
+
         sha256 = hashlib.sha256()
 
         # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
         block_string = json.dumps(block, sort_keys=True).encode()
         sha256.update(block_string)
-        # files = [x for x in os.listdir(directory) if x.endswith('.jpg')]
-
-        # if len(files) > block.index:
-        #     fp = directory + "\\" + files[json.loads('block')[]]
-        #     if os.path.isfile(fp):
-        #         with open(fp, 'rb') as f:
-        #                 while True:
-        #                     data = f.read(BUF_SIZE)
-        #                     if not data:
-        #                         break
-        #                     sha256.update(data)
 
         return sha256.hexdigest()
+
+    def fileHash(file):
+        directory = r'C:\Users\Highquality\data'
+        BUF_SIZE = 65536
+        files = [x for x in os.listdir(directory) if x.endswith('.jpg')]
+        fp = directory + "\\" + files[json.loads('block')[]]
+        if os.path.isfile(fp):
+            with open(fp, 'rb') as f:
+                    while True:
+                        data = f.read(BUF_SIZE)
+                        if not data:
+                            break
+                        sha256.update(data)
+        
+        return sha256.hexdigest()
+
 
     def proof_of_work(self, last_block):
         """
@@ -193,7 +178,7 @@ class Blockchain:
         """
 
         last_proof = last_block['proof']
-   65l5     last_hash = self.hash(last_block)
+        last_hash = self.hash(last_block)
 
         proof = 0
         while self.valid_proof(last_proof, proof, last_hash) is False:
@@ -247,21 +232,6 @@ def mine():
     }
     return jsonify(response), 200
 
-@app.route('/transactions/onCreation', methods=['POST'])
-def Tx_onCreation():
-    values = request.get_json()
-
-    # Check that the required fields are in the POST'ed data
-
-    # required = ['File Hash', 'FilePath', 'Signature']
-    # if not all(k in values for k in required):
-        # return 'Missing values', 400
-
-
-    index = blockchain.new_transaction('File Creation', values['File Hash'], values['File Path'], 'None', 'None', time(), values['Signature'])
-
-    response = {'message': f'Transaction will be added to Block {index}'}
-    return jsonify(response), 201
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
