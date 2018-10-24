@@ -150,6 +150,7 @@ class Blockchain:
 
         return sha256.hexdigest()
 
+    @staticmethod
     def fileHash(file):
         sha256 = hashlib.sha256()
         directory = r'C:\Users\Highquality\data'
